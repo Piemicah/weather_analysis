@@ -115,9 +115,9 @@ def plot_crop(yields_data, weather_data, crop_name):
         y_pred = model.predict(x)
         ax.plot(x, y_pred, color="r", label="Linear Regression")
         ax.scatter(x, y, color="b", label="Actual Data")
-        ax.set_title(f"Effect of {feature} on {crop_name} (2011-2024)")
-        ax.set_xlabel(f"{crop_name} (tons/Ha)")
-        ax.set_ylabel(feature)
+        ax.set_title(f"Effect of {feature} on {crop_name} (2011-2024)", fontsize=20)
+        ax.set_xlabel(f"{crop_name} (tons/Ha)", fontsize=16)
+        ax.set_ylabel(feature, fontsize=16)
         ax.legend()
         st.pyplot(fig)
 
@@ -157,10 +157,12 @@ try:
             fxn = np.poly1d(poly)
             ax.plot(years, fxn(years), color="r", label="Trend Line")
             ax.plot(years, df_kwara.yearly[feature], color="b", label="Actual Data")
-            ax.set_title(f"Average {feature} from {years[0]}-{years[-1]} in KWARA")
+            ax.set_title(
+                f"Average {feature} from {years[0]}-{years[-1]} in KWARA", fontsize=20
+            )
             ax.set_xticks(years)
             ax.set_xticklabels(years, rotation=90)
-            ax.set_ylabel(feature)
+            ax.set_ylabel(feature, fontsize=16)
             ax.legend()
             st.pyplot(fig)
 
