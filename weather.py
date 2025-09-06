@@ -2,6 +2,7 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.linear_model import LinearRegression
+from sklearn.feature_selection import r_regression
 from scipy.stats import f_oneway
 import streamlit as st
 
@@ -102,6 +103,7 @@ def anova(data, feature):
 def plot_crop(yields_data, weather_data, crop_name):
     st.subheader(f"Effect of Weather on {crop_name.upper()} Yields")
     model = LinearRegression()
+
     try:
         x = yields_data.loc[2011:2024, crop_name].values.reshape(-1, 1)
     except KeyError:
@@ -109,8 +111,11 @@ def plot_crop(yields_data, weather_data, crop_name):
         return
 
     for feature in weather_data.columns:
+        y_cord = weather_data[feature].mean()
+        x_cord = x.mean()
         fig, ax = plt.subplots(figsize=(10, 6))
         y = weather_data.loc["2011":"2024", feature].values.reshape(-1, 1)
+        coef = r_regression(x, y)
         model.fit(x, y)
         y_pred = model.predict(x)
         ax.plot(x, y_pred, color="r", label="Linear Regression")
@@ -118,6 +123,7 @@ def plot_crop(yields_data, weather_data, crop_name):
         ax.set_title(f"Effect of {feature} on {crop_name} (2011-2024)", fontsize=20)
         ax.set_xlabel(f"{crop_name} (tons/Ha)", fontsize=16)
         ax.set_ylabel(feature, fontsize=16)
+        ax.annotate(f"r = {coef[0]:.4f}", xy=(x_cord, 1.005 * y_cord))
         ax.legend()
         st.pyplot(fig)
 
@@ -151,6 +157,7 @@ try:
 
         features_to_plot = df_kwara.yearly.columns
         for feature in features_to_plot:
+            y_cord = data[feature].mean()
             years = df_kwara.yearly.index.astype(int)
             fig, ax = plt.subplots(figsize=(14, 8))
             poly = np.polyfit(years, df_kwara.yearly[feature], 1)
@@ -163,6 +170,7 @@ try:
             ax.set_xticks(years)
             ax.set_xticklabels(years, rotation=90)
             ax.set_ylabel(feature, fontsize=16)
+            ax.annotate(f"coef = {fxn.c[0]:.4f}", xy=(2010, 1.005 * y_cord))
             ax.legend()
             st.pyplot(fig)
 
@@ -243,7 +251,7 @@ try:
             with st.form(key="my form"):
                 selected_crop = st.selectbox("Select a crop to analyze:", crops_list)
 
-                st.form_submit_button(label=f"Analyse")
+                st.form_submit_button(label=f"Analyse", type="primary")
                 if selected_crop:
                     plot_crop(yields_df, combined_weather_crop, selected_crop)
 
