@@ -96,7 +96,7 @@ def anova(data, feature):
         )
     else:
         st.write("There is not enough evidence to reject the Null Hypothesis.")
-    st.dataframe(dat.head())
+    st.dataframe(dat)
     st.markdown("---")
 
 
