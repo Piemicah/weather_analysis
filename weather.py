@@ -6,7 +6,6 @@ from sklearn.feature_selection import r_regression
 from scipy.stats import f_oneway
 import streamlit as st
 
-
 excel_file = "ALL DATA EXTRACT UPDATE.xlsx"
 crop_file = "2011 - 2024 APS KWADP  ORIGINAL.xlsx"
 
@@ -142,8 +141,14 @@ try:
         data3 = okuta.yearly.loc["1997":"2024"]
         data4 = patigi.yearly.loc["1997":"2024"]
 
-        combined_data = pd.concat([data1, data2, data3, data4], axis=1)
-        data = combined_data.stack().groupby(level=[0, 1]).mean().unstack()
+        combined_data = pd.concat(
+            [data1, data2, data3, data4],
+            axis=1,
+            keys=["ILORIN", "OMU ARAN", "OKUTA", "PATIGI"],
+        )
+
+        # Average weather values across towns
+        data = combined_data.groupby(level=1, axis=1).mean()
 
         st.success("Weather data loaded and processed successfully!")
 
