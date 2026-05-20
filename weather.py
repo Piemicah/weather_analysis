@@ -147,8 +147,8 @@ try:
             keys=["ILORIN", "OMU ARAN", "OKUTA", "PATIGI"],
         )
 
-        # Average weather values across towns
-        data = combined_data.groupby(level=1, axis=1).mean()
+        # Average across towns
+        data = combined_data.T.groupby(level=1).mean().T
 
         st.success("Weather data loaded and processed successfully!")
 
